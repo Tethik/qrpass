@@ -2,6 +2,7 @@
 
 import unittest
 import makeqr
+import readqr
 import random
 import string
 
@@ -45,17 +46,18 @@ class TestCrt(unittest.TestCase):
 		key = makeqr.gen_aes_key(master_pass, aes_key)		
 		iv, ciphertext = makeqr.encrypt(key, plaintext)
 		self.assertNotEqual(plaintext, ciphertext)		
-		self.assertEqual(plaintext, makeqr.decrypt(key, iv, ciphertext))
+		self.assertEqual(plaintext, readqr.decrypt(key, iv, ciphertext))
 		
 	def test_qr_gen_and_load(self):
 		master_pass = "".join(random.sample(string.letters, 10))
 		aes_key = "".join(random.sample(string.letters, 16))
 		plaintext = "".join(random.sample(string.letters, 50))		
 		
-		img = makeqr.encryptedqr(master_pass, aes_key, plaintext)
+		img = makeqr.encrypted_qr(master_pass, aes_key, plaintext)
 		img.save("test.png")
 		
-		pass
+		plain = readqr.decrypted_qr(master_pass, aes_key, "test.png")
+		self.assertEqual(plaintext, plain)
 
 if __name__ == '__main__':
     unittest.main()

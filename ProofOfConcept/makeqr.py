@@ -5,6 +5,7 @@ from Crypto import Random
 from Crypto.Cipher import AES
 import qrcode
 from optparse import OptionParser
+import base64
 
 options = OptionParser(usage='%prog master_password content_to_encrypt', description='Create a qr code image using a master password.')
 
@@ -26,20 +27,16 @@ def gen_aes_key(master_password, aes_key):
 # Encrypt using aes in CFB mode. Return ciphertext and iv.
 def encrypt(master_aes_key, plaintext):
 	rng = Random.new()
-	IV = rng.read(16)
-	aes = AES.new(master_aes_key, AES.MODE_CFB, IV)
+	iv = rng.read(16)
+	aes = AES.new(master_aes_key, AES.MODE_CFB, iv)
 	ciphertext = aes.encrypt(plaintext)
-	return (IV, ciphertext)
+	return (iv, ciphertext)
 	
-# Decrypt using key and IV in CFB mode.
-def decrypt(master_aes_key, IV, ciphertext):
-	aes = AES.new(master_aes_key, AES.MODE_CFB, IV)	
-	return aes.decrypt(ciphertext)
-	
-def encryptedqr(master_pass, aes_key, content):
+def encrypted_qr(master_pass, aes_key, content):
 	key = gen_aes_key(master_pass, aes_key)
-	iv, ciphertext = encrypt(key, content)
-	return qrcode.make(iv + ciphertext)
+	iv, ciphertext = encrypt(key, content)	
+	b64 = base64.b64encode(iv + ciphertext)
+	return qrcode.make(base64.b64encode(iv + ciphertext))
 	
 if __name__ == "__main__":
 	opts, args = options.parse_args()
@@ -49,11 +46,11 @@ if __name__ == "__main__":
 	try:
 		aes_key = open("qrpass.pub").read()
 	except:
-		print "Please create a public AES key first. This is used together with your master password to generate the master key used for encryption."
+		print "Please create a AES keyfile first. This is used together with your master password to generate the master key used for encryption."
 		exit(1)
 	
-	img = encryptedqr(args[0], aes_key, args[1])
-	print img.tostring()
+	img = encrypted_qr(args[0], aes_key, args[1])
+	img.show()
 	
 	
 
