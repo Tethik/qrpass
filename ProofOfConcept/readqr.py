@@ -7,7 +7,7 @@ from PIL import Image
 from optparse import OptionParser
 import base64
 
-options = OptionParser(usage='%prog master_password qrcode_png', description='Reads the content of an encrypted qr code')
+options = OptionParser(usage='%prog qrcode_png', description='Reads the content of an encrypted qr code')
 
 # Decrypt using key and IV in CFB mode.
 def decrypt(master_aes_key, iv, ciphertext):	
@@ -40,17 +40,12 @@ def decrypted_qr(master_pass, aes_key, img):
 		iv = data[:16]		
 		ciphertext = data[16:]		
 		return decrypt(key, iv, ciphertext)
-		
 	
-	return None
-	
-	
-	
-		
+	return None	
 
 if __name__ == "__main__":
 	opts, args = options.parse_args()
-	if len(args) < 2:
+	if len(args) < 1:
 		options.print_help()
 		exit(1)
 	try:
@@ -60,6 +55,8 @@ if __name__ == "__main__":
 		print "Please create a AES keyfile first. This is used together with your master password to generate the master key used for encryption."
 		exit(1)
 		
-	print decrypted_qr(args[0], aes_key, args[1])
+	master_password = raw_input("Master password: ")
+		
+	print decrypted_qr(master_password, aes_key, args[0])
 		
 	

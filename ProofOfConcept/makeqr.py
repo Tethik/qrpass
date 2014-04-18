@@ -7,7 +7,7 @@ import qrcode
 from optparse import OptionParser
 import base64
 
-options = OptionParser(usage='%prog master_password content_to_encrypt', description='Create a qr code image using a master password.')
+options = OptionParser(usage='%prog', description='Create a qr code image using a master password.')
 
 NUMBER_OF_AES_ROUNDS = 10000
 
@@ -40,17 +40,24 @@ def encrypted_qr(master_pass, aes_key, content):
 	
 if __name__ == "__main__":
 	opts, args = options.parse_args()
-	if len(args) < 2:
-		options.print_help()
-		exit(1)
+	#~ if len(args) < 2:
+		#~ options.print_help()
+		#~ exit(1)
+	
 	try:
 		aes_key = open("qrpass.pub").read()
 	except:
 		print "Please create a AES keyfile first. This is used together with your master password to generate the master key used for encryption."
 		exit(1)
 	
-	img = encrypted_qr(args[0], aes_key, args[1])
+	filename = raw_input("Save to filename: ")
+	master_password = raw_input("Master password: ")
+	new_password = raw_input("Password to encrypt: ")	
+			
+	
+	img = encrypted_qr(master_password, aes_key, new_password)
 	img.show()
+	img.save(filename)
 	
 	
 
