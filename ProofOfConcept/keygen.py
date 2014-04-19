@@ -3,6 +3,7 @@
 from Crypto import Random
 from optparse import OptionParser
 import qrcode
+import base64
 
 options = OptionParser(usage='%prog file=qrpass.pub', description='Generate a random 256-bit AES key')
 
@@ -15,7 +16,7 @@ if __name__ == "__main__":
 	key = rng.read(32)
 	with file(filename, "wb") as f:
 		f.write(key)
-	qr = qrcode.make(key)
+	qr = qrcode.make(base64.b64encode(key))
 	qr.save(filename + ".png")
 	qr.show()
 
