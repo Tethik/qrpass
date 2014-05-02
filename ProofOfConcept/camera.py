@@ -8,6 +8,7 @@ import readqr
 import zbar
 from PIL import Image
 import base64
+import pyperclip
 
 pygame.init()
 pygame.camera.init()
@@ -53,7 +54,10 @@ class Capture(object):
         if self.find_qr_code():			
 			master_password = raw_input("Master password: ")
 			pygame.image.save(self.snapshot, "img.png")
-			print readqr.decrypted_qr(master_password, aes_key, "img.png")
+			password = readqr.decrypted_qr(master_password, aes_key, "img.png")
+			pyperclip.copy(password)
+			print "Password copied to clipboard!"			
+			self.cam.stop()
 			exit(0)
         
     def find_qr_code(self):
