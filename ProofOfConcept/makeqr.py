@@ -44,7 +44,7 @@ def encrypted_qr(master_pass, aes_key, content):
 	#~ print base64.b64encode(iv)
 	#~ print base64.b64encode(ciphertext)
 	#~ print base64.b64encode(content)
-	return qrcode.make(base64.b64encode(iv + ciphertext))
+	return qrcode.make(b64)
 	
 if __name__ == "__main__":
 	opts, args = options.parse_args()

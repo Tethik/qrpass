@@ -11,8 +11,14 @@ options = OptionParser(usage='%prog qrcode_png', description='Reads the content 
 
 # Decrypt using key and IV in CFB mode.
 def decrypt(master_aes_key, iv, ciphertext):	
-	aes = AES.new(master_aes_key, AES.MODE_CFB, iv)	
+	aes = AES.new(master_aes_key, AES.MODE_CFB, iv, segment_size=128)	
 	return aes.decrypt(ciphertext)
+	
+def unpad(plaintext):
+	c = plaintext[-1]
+	if plaintext[-ord(c):] == c * ord(c):
+		return plaintext[:len(plaintext) - ord(c)]
+	return plaintext
 	
 def decrypted_qr(master_pass, aes_key, img):
 	key = makeqr.gen_aes_key(master_pass, aes_key)
@@ -39,7 +45,7 @@ def decrypted_qr(master_pass, aes_key, img):
 		data = base64.b64decode(b64)
 		iv = data[:16]		
 		ciphertext = data[16:]		
-		return decrypt(key, iv, ciphertext)
+		return unpad(decrypt(key, iv, ciphertext))
 	
 	return None	
 
