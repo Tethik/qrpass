@@ -9,6 +9,9 @@ import zbar
 from PIL import Image
 import base64
 import pyperclip
+import os
+
+os.environ['PYGAME_CAMERA'] = 'opencv'
 
 pygame.init()
 pygame.camera.init()
@@ -50,6 +53,8 @@ class Capture(object):
         # blit it to the display surface.  simple!
         self.display.blit(self.snapshot, (0,0))
         pygame.display.flip()
+        
+        print self.cam.get_size()
         
         if self.find_qr_code():			
 			master_password = raw_input("Master password: ")

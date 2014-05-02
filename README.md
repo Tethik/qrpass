@@ -14,5 +14,7 @@ pygame
 zbar
 pyperclip
 
+
 Linux dependencies:
-xclip (linux)
+xclip
+python-opencv
