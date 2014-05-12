@@ -10,6 +10,7 @@ from PIL import Image
 import base64
 import pyperclip
 import os
+import getpass
 
 os.environ['PYGAME_CAMERA'] = 'opencv'
 
@@ -54,12 +55,10 @@ class Capture(object):
         self.display.blit(self.snapshot, (0,0))
         pygame.display.flip()
         
-        print self.cam.get_size()
-        
         if self.find_qr_code():			
-			master_password = raw_input("Master password: ")
-			pygame.image.save(self.snapshot, "img.png")
-			password = readqr.decrypted_qr(master_password, aes_key, "img.png")
+			master_password = getpass.getpass("Master password: ")
+			pygame.image.save(self.snapshot, "tmp/img.png")
+			password = readqr.decrypted_qr(master_password, aes_key, "tmp/img.png")
 			pyperclip.copy(password)
 			print "Password copied to clipboard!"			
 			self.cam.stop()

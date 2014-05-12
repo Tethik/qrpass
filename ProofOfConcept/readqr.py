@@ -6,6 +6,7 @@ from Crypto.Cipher import AES
 from PIL import Image
 from optparse import OptionParser
 import base64
+import getpass
 
 options = OptionParser(usage='%prog qrcode_png', description='Reads the content of an encrypted qr code')
 
@@ -61,7 +62,7 @@ if __name__ == "__main__":
 		print "Please create a AES keyfile first. This is used together with your master password to generate the master key used for encryption."
 		exit(1)
 		
-	master_password = raw_input("Master password: ")
+	master_password = getpass.getpass("Master password: ")
 		
 	print decrypted_qr(master_password, aes_key, args[0])
 		
